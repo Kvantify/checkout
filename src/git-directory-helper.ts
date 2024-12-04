@@ -21,6 +21,7 @@ export async function prepareExistingDirectory(
 
   // Check whether using git or REST API
   if (!git) {
+    core.debug(`Going to remove directory: No git??`);
     remove = true
   }
   // Fetch URL does not match
@@ -28,6 +29,7 @@ export async function prepareExistingDirectory(
     !fsHelper.directoryExistsSync(path.join(repositoryPath, '.git')) ||
     repositoryUrl !== (await git.tryGetFetchUrl())
   ) {
+    core.debug(`Going to remove directory '${repositoryUrl}' != '{yield git.tryGetFetchUrl()}'`);
     remove = true
   } else {
     // Delete any index.lock and shallow.lock left by a previously canceled run or crashed git process
@@ -117,7 +119,7 @@ export async function prepareExistingDirectory(
   if (remove) {
     // Delete the contents of the directory. Don't delete the directory itself
     // since it might be the current working directory.
-    core.info(`Deleting the contents of '${repositoryPath}'`)
+    core.info(`Deleting the contents of '${repositoryPath}' in helper.ts`)
     for (const file of await fs.promises.readdir(repositoryPath)) {
       await io.rmRF(path.join(repositoryPath, file))
     }

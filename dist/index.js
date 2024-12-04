@@ -1034,11 +1034,13 @@ function prepareExistingDirectory(git, repositoryPath, repositoryUrl, clean, ref
         let remove = false;
         // Check whether using git or REST API
         if (!git) {
+            core.debug(`Going to remove directory: No git??`);
             remove = true;
         }
         // Fetch URL does not match
         else if (!fsHelper.directoryExistsSync(path.join(repositoryPath, '.git')) ||
-            repositoryUrl !== (yield git.tryGetFetchUrl())) {
+                 repositoryUrl !== (yield git.tryGetFetchUrl())) {
+            core.debug(`Going to remove directory '${repositoryUrl}' != '${yield git.tryGetFetchUrl()}'`);
             remove = true;
         }
         else {
